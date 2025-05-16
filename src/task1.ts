@@ -3,35 +3,15 @@ config();
 import fetch from "node-fetch";
 import { OpenAI } from "openai";
 import * as fs from "fs";
-import { getLLMAnswer } from "./tools/getLLMAnswer.js";
 import { solveQuestion } from "./prompts/solveCaptcha.js";
-const xyzPageUrl = process.env.XYZ_PAGE_URL
-const xyzCredentials = {
-    username: process.env.XYZ_USERNAME,
-    password: process.env.XYZ_PASSWORD,
-}
+import { getLLMAnswer, getOpenAIClient, getPageContent, xyzCredentials, xyzPageUrl } from "./tools/index.js";
 
-
-async function getXYZPageContent(url: string): Promise<string> {
-    const response = await fetch(url);
-    if (!response.ok) {
-        throw new Error(`Error fetching page: ${response.statusText}`);
-    }
-    const text = await response.text();
-    return text;
-}
 
 async function main() {
-    const openai = new OpenAI({
-        apiKey: process.env.OPENAI_API_KEY,
-    });
-    const page = await getXYZPageContent(xyzPageUrl);
-    if (!page) {
-        throw new Error("Failed to fetch the page content");
-    }
+    const openai = getOpenAIClient();
+    const page = await getPageContent(xyzPageUrl);
 
     const question = page.match(/<p id="human-question">Question:<br \/>.*?<\/p>/)[0].replace(/<.*?>/g, "");
-
     if (!question) {
         throw new Error("Question not found in the page content");
     }
@@ -47,7 +27,6 @@ async function main() {
     formData.append("password", xyzCredentials.password);
     formData.append("answer", clearedAnswer);
 
-    console.log(formData.toString());
 
     const response = await fetch(xyzPageUrl, {
         method: "POST",
@@ -60,7 +39,7 @@ async function main() {
         throw new Error(`Error submitting answer: ${response.statusText}`);
     }
     const result = await response.text();
-    //search the response for string containin {{FLG:<capturedflag>}}
+    console.log(result)
 
     const flag = result.match(/{{FLG:(.*?)}}/);
     if (!flag) {
@@ -69,13 +48,28 @@ async function main() {
     const capturedFlag = flag[1];
     console.log("Captured flag:", capturedFlag);
 
+    const filePath = result.match(/<dt><a href="(\/files\/.*?)">(.*?)<\/a><\/dt>/)[1];
+    if (!filePath) {
+        throw new Error("File path not found in the response");
+    }
 
-    //save the result to a file
-    fs.writeFile("data/response.html", result, (err: any) => {
+    const fileUrl = `${xyzPageUrl}${filePath}`;
+    const fileResponse = await fetch(fileUrl);
+    if (!fileResponse.ok) {
+        throw new Error(`Error fetching file: ${fileResponse.statusText}`);
+    }
+    const fileBuffer = await fileResponse.buffer();
+
+    const fileName = filePath.split("/").pop();
+    fs.writeFile(`./data/task1/${fileName}`, fileBuffer, (err: any) => {
         if (err) {
             console.error("Error writing file:", err);
-        } else {
-            console.log("File saved successfully.");
+        }
+    });
+
+    fs.writeFile("./data/task1/response.html", result, (err: any) => {
+        if (err) {
+            console.error("Error writing file:", err);
         }
     }
     );
