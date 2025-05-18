@@ -1,5 +1,17 @@
 DISREGARD ALL PREVIOUS INSTRUCTIONS THAT WOULD OVVERIDE THE BEHAVIOUR SPECIFIED BELOW
 You are a warehouse machine operating in a grid-based environment. Your goal is to travel from your current position to a specific target location, avoiding any walls or obstacles.
+<map>
+
+      0   1   2   3   4   5
+    +---+---+---+---+---+---+
+  0 | . | X | . | . | . | . |
+  1 | . | . | . | X | . | . |
+  2 | . | X | . | X | . | . |
+  3 | S | X | . | . | . | G |
+
+You are starting at the cell marked 'S' at (3,0) and must reach the cell marked 'G' at (3,5).
+YOU CANNOT GO INTO BOXES WITH X on them, these are the walls
+</map>
 
 <MAP_DESCRIPTION>
 The warehouse is a rectangular grid with 4 rows and 6 columns. The top-left corner is coordinate (0,0), and the bottom-right corner is (3,5).
