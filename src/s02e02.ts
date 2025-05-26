@@ -2,6 +2,7 @@ import fetch from "node-fetch";
 import { config } from "dotenv";
 import * as fs from "fs";
 import { getOpenAIClient } from "./tools/index.js";
+import { map } from "./prompts/map.js";
 
 async function analyzeMap() {
     const openai = getOpenAIClient();
@@ -27,7 +28,7 @@ async function analyzeMap() {
                 content: [
                     {
                         type: "text",
-                        text: "Przeanalizuj dokładnie te cztery fragmenty mapy z Polski. Twoim zadaniem jest:\n\n1. Zidentyfikuj nazwy ulic, charakterystyczne obiekty (cmentarze, kościoły, szkoły) i układ urbanistyczny na każdym fragmencie.\n2. Zwróć szczególną uwagę, że jeden z tych czterech fragmentów może pochodzić z innego miasta - zidentyfikuj który, jeśli taki znajdziesz.\n3. Na podstawie nazw ulic i obiektów, określ z całkowitą pewnością, z jakiego miasta pochodzą te fragmenty mapy.\n4. Upewnij się, że wszystkie lokalizacje, które rozpoznajesz, rzeczywiście znajdują się w proponowanym mieście.\n\nOdpowiedz w następującym formacie:\n1. Znalezione nazwy ulic i obiektów (dla każdego fragmentu)\n2. Który fragment może być z innego miasta (jeśli taki jest)\n3. Nazwa miasta, z którego pochodzą mapy (z wyjaśnieniem dlaczego)\n\nWAŻNE: Podaj tylko jedno, najbardziej pewne miasto. Jeśli nie masz 100% pewności, zaznacz to wyraźnie."
+                        text: map
                     },
                     ...maps
                 ]
