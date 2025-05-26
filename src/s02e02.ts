@@ -40,13 +40,6 @@ async function analyzeMap() {
 }
 
 async function main() {
-    const c3ntralaKey = process.env.C3NTRALA_KEY;
-    const c3ntralaUrl = process.env.C3NTRALA_URL;
-
-    if (!c3ntralaKey || !c3ntralaUrl) {
-        throw new Error("C3NTRALA_KEY or C3NTRALA_URL not found in environment variables");
-    }
-
     const analysis = await analyzeMap();
     console.log("Analysis result:", analysis);
     
