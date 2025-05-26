@@ -61,13 +61,13 @@ async function main() {
     const fileBuffer = await fileResponse.buffer();
 
     const fileName = filePath.split("/").pop();
-    fs.writeFile(`./data/task1/${fileName}`, fileBuffer, (err: any) => {
+    fs.writeFile(`./data/s01e01/${fileName}`, fileBuffer, (err: any) => {
         if (err) {
             console.error("Error writing file:", err);
         }
     });
 
-    fs.writeFile("./data/task1/response.html", result, (err: any) => {
+    fs.writeFile("./data/s01e01/response.html", result, (err: any) => {
         if (err) {
             console.error("Error writing file:", err);
         }

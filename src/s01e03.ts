@@ -49,7 +49,7 @@ async function main() {
         }
 
     }
-    fs.writeFileSync("./data/task3/fixed-robot-instructions.json", JSON.stringify(fileContent, null, 2));
+    fs.writeFileSync("./data/s01e03/fixed-robot-instructions.json", JSON.stringify(fileContent, null, 2));
     fileContent['apikey'] = c3ntralaKey
 
     const response = await fetch("https://centrala.ag3nts.org/report", {
